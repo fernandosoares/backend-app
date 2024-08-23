@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15  # Use the latest version of PostgreSQL
+    container_name: postgres-backend-app
+    environment:
+      POSTGRES_DB: backend-app
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - backend-app-network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com  # Set your pgAdmin email
+      PGADMIN_DEFAULT_PASSWORD: admin  # Set your pgAdmin password
+      PGADMIN_CONFIG_SERVER_MODE: 'False'  # Enable multi-user mode
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    networks:
+      - backend-app-network
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+
+volumes:
+  postgres-data:
+  pgadmin-data:
+
+networks:
+  backend-app-network:
+    driver: bridge
